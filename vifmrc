@@ -12,10 +12,10 @@
 " Command used to edit files in various contexts.  The default is vim.
 " If you would like to use another vi clone such as Elvis or Vile
 " you will need to change this setting.
-if executable('vim')
-    set vicmd=vim
-elseif executable('nvim')
+if executable('nvim')
     set vicmd=nvim
+elseif executable('vim')
+    set vicmd=vim
 elseif executable('elvis')
     set vicmd=elvis\ -G\ termcap
 elseif executable('vile')
@@ -110,8 +110,11 @@ set statusline="  Hint: %z%= %A %10u:%-7g %15s %20d  "
 
 " :mark mark /full/directory/path [filename]
 
+delm!
 mark b ~/bin/
 mark h ~/
+mark l ~/documents/library/
+mark n ~/documents/notes/
 
 " ------------------------------------------------------------------------------
 " Commands
@@ -178,7 +181,8 @@ command! reload :write | restart full
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
 " Pdf
-filextype {*.pdf},<application/pdf> okular %c %i &, apvlv %c, xpdf %c
+filextype {*.pdf},<application/pdf> zathura %c %i, apvlv %c, xpdf %c
+"filextype {*.pdf},<application/pdf> okular %c %i, apvlv %c, xpdf %c
 fileviewer {*.pdf},<application/pdf> pdftotext -nopgbrk %c -
 
 " PostScript
@@ -198,12 +202,12 @@ filextype {*.djvu},<image/vnd.djvu>
 " Audio
 filetype {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus},
         \<audio/*>
+       \ {Play using mpv}
+       \ mpv --no-video %l %s,
        \ {Play using ffplay}
-       \ ffplay -nodisp -hide_banner -autoexit %c,
+       \ ffplay -hide_banner -autoexit %c,
        \ {Play using MPlayer}
        \ mplayer %c,
-       \ {Play using mpv}
-       \ mpv --no-video %c %s,
 fileviewer {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus,
            \*.aac}
          \ ffprobe -hide_banner -pretty %c 2>&1
@@ -213,6 +217,8 @@ filextype {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
           \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
           \*.as[fx]},
          \<video/*>
+        \ {Play using mpv}
+        \ mpv %l %s,
         \ {View using vlc}
         \ vlc %f,
         \ {View using ffplay}
@@ -221,8 +227,6 @@ filextype {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
         \ dragon %f:p,
         \ {View using mplayer}
         \ mplayer %f,
-        \ {Play using mpv}
-        \ mpv --no-video %c %s,
 fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
            \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
            \*.as[fx]},
@@ -246,6 +250,8 @@ fileviewer {*.[1-8]},<text/troff> man ./%c | col -b
 
 " Images
 filextype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
+        \ {View in feh}
+        \ feh -d -S filename,
         \ {View in sxiv}
         \ sxiv %f,
         \ {View in gwenview}
@@ -538,4 +544,4 @@ nnoremap <c-u> <c-w>x
 " ------------------------------------------------------------------------------
 
 " https://github.com/cirala/vifm_devicons
-source ./scripts/favicons.vifm
+source /home/psy/.config/vifm/scripts/favicons.vifm
